@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://pastebin-backend-new.vercel.app/api/$1"
+    },
+    {
+      "source": "/p/(.*)",
+      "destination": "https://pastebin-backend-new.vercel.app/p/$1"
+    }
+  ]
+}
