@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
  * - Backend served from /api/* and /p/*
  * So API_BASE stays empty.
  */
-const API_BASE = "https://pastebin-lite-52yb.vercel.app";
+const API_BASE = "https://pastebin-backend-new.vercel.app";
 
 function parsePositiveIntOrNull(v) {
   if (v === "" || v == null) return null;
