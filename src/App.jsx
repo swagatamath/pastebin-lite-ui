@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import "./App.css";
 
 /**
  * Same-domain deployment:
@@ -40,7 +41,7 @@ export default function App() {
   const [fetchRes, setFetchRes] = useState(null);
   const [fetchErr, setFetchErr] = useState("");
 
-  // Health state (separate so it doesn’t overwrite fetch result)
+  // Health state (separate so it doesn't overwrite fetch result)
   const [healthRes, setHealthRes] = useState(null);
   const [healthErr, setHealthErr] = useState("");
 
@@ -170,181 +171,223 @@ export default function App() {
   const disabled = loading;
 
   return (
-    <div style={{ fontFamily: "system-ui, Arial", maxWidth: 920, margin: "28px auto", padding: 16 }}>
-      <h2 style={{ margin: 0 }}>Pastebin-Lite Tester</h2>
+    <div className="app-container">
+      <div className="app-header">
+        <h1 className="app-title">Pastebin Lite</h1>
+        <p className="app-subtitle">Simple, fast, and secure text sharing</p>
+      </div>
 
-      <p style={{ marginTop: 8, color: "#555" }}>
-        Running on: <code>{origin || "(loading...)"}</code>
-        <span style={{ marginLeft: 10, color: "#888" }}>(UI + API are same domain)</span>
-      </p>
-
-      <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-        {/* Create */}
-        <div style={{ flex: "1 1 440px", border: "1px solid #ddd", borderRadius: 12, padding: 14 }}>
-          <h3 style={{ marginTop: 0 }}>Create Paste</h3>
-
-          <label style={{ display: "block", marginBottom: 6 }}>Content *</label>
-          <textarea
-            rows={6}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Type your paste text..."
-            style={{ width: "100%", padding: 10, borderRadius: 10, border: "1px solid #ccc" }}
-          />
-
-          <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
-            <div style={{ flex: 1 }}>
-              <label style={{ display: "block", marginBottom: 6 }}>ttl_seconds (optional)</label>
-              <input
-                value={ttl}
-                onChange={(e) => setTtl(e.target.value)}
-                placeholder="e.g. 60"
-                style={{ width: "100%", padding: 10, borderRadius: 10, border: "1px solid #ccc" }}
-              />
-            </div>
-            <div style={{ flex: 1 }}>
-              <label style={{ display: "block", marginBottom: 6 }}>max_views (optional)</label>
-              <input
-                value={maxViews}
-                onChange={(e) => setMaxViews(e.target.value)}
-                placeholder="e.g. 2"
-                style={{ width: "100%", padding: 10, borderRadius: 10, border: "1px solid #ccc" }}
-              />
-            </div>
-          </div>
-
-          <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
-            <button
-              onClick={createPaste}
-              disabled={disabled}
-              style={{ padding: "10px 14px", borderRadius: 10, border: "1px solid #333", cursor: "pointer" }}
-            >
-              {loading ? "Working..." : "Create"}
-            </button>
-
-            <button
-              onClick={() => {
-                setContent("");
-                setTtl("");
-                setMaxViews("");
-                setCreateRes(null);
-                setCreateErr("");
-              }}
-              disabled={disabled}
-              style={{ padding: "10px 14px", borderRadius: 10, border: "1px solid #ccc", cursor: "pointer" }}
-            >
-              Clear
-            </button>
-          </div>
-
-          {createErr && (
-            <div style={{ marginTop: 12, padding: 10, background: "#ffecec", border: "1px solid #ffb3b3", borderRadius: 10 }}>
-              <b>Error:</b> {createErr}
-            </div>
-          )}
-
-          {createRes && (
-            <div style={{ marginTop: 12, padding: 10, background: "#eef8ff", border: "1px solid #b3ddff", borderRadius: 10 }}>
-              <div>
-                <b>ID:</b> <code>{createRes.id}</code>
-              </div>
-
-              <div style={{ marginTop: 6 }}>
-                <b>HTML URL:</b>{" "}
-                <a href={pasteUrl} target="_blank" rel="noreferrer">
-                  {origin}{pasteUrl}
-                </a>
-              </div>
-
-              <div style={{ marginTop: 6 }}>
-                <b>API JSON:</b>{" "}
-                <a href={apiJsonUrl} target="_blank" rel="noreferrer">
-                  {origin}{apiJsonUrl}
-                </a>{" "}
-                <span style={{ color: "#666" }}>(counts as a view)</span>
-              </div>
-            </div>
-          )}
+      <div className="main-content">
+        <div className="origin-info">
+          Running on: <code>{origin || "(loading...)"}</code>
+          <span style={{ marginLeft: 10, opacity: 0.7 }}>(UI + API are same domain)</span>
         </div>
 
-        {/* Fetch */}
-        <div style={{ flex: "1 1 440px", border: "1px solid #ddd", borderRadius: 12, padding: 14 }}>
-          <h3 style={{ marginTop: 0 }}>Fetch Paste</h3>
+        <div className="grid-container">
+          {/* Create */}
+          <div className="card">
+            <h3 className="card-title">📝 Create Paste</h3>
 
-          <div style={{ display: "flex", gap: 10 }}>
-            <input
-              value={pasteId}
-              onChange={(e) => setPasteId(e.target.value)}
-              placeholder="Paste ID (e.g. abc123...)"
-              style={{ flex: 1, padding: 10, borderRadius: 10, border: "1px solid #ccc" }}
-            />
-            <button
-              onClick={fetchPaste}
-              disabled={disabled}
-              style={{ padding: "10px 14px", borderRadius: 10, border: "1px solid #333", cursor: "pointer" }}
-            >
-              {loading ? "Working..." : "Fetch"}
-            </button>
-          </div>
+            <div className="form-group">
+              <label>Content *</label>
+              <textarea
+                rows={8}
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Type your paste text..."
+              />
+            </div>
 
-          <div style={{ display: "flex", gap: 10, marginTop: 10, flexWrap: "wrap" }}>
-            <button
-              onClick={checkHealth}
-              disabled={disabled}
-              style={{ padding: "10px 14px", borderRadius: 10, border: "1px solid #ccc", cursor: "pointer" }}
-            >
-              Check /api/healthz
-            </button>
+            <div className="form-row">
+              <div className="form-group">
+                <label>TTL Seconds (optional)</label>
+                <input
+                  value={ttl}
+                  onChange={(e) => setTtl(e.target.value)}
+                  placeholder="e.g. 60"
+                />
+              </div>
+              <div className="form-group">
+                <label>Max Views (optional)</label>
+                <input
+                  value={maxViews}
+                  onChange={(e) => setMaxViews(e.target.value)}
+                  placeholder="e.g. 2"
+                />
+              </div>
+            </div>
 
-            {pasteId.trim() && (
-              <a href={`/p/${pasteId.trim()}`} target="_blank" rel="noreferrer" style={{ alignSelf: "center" }}>
-                Open HTML view
-              </a>
+            <div className="button-group">
+              <button
+                onClick={createPaste}
+                disabled={disabled}
+                className="primary"
+              >
+                {loading ? (
+                  <>
+                    <span className="loading-spinner"></span>
+                    Creating...
+                  </>
+                ) : (
+                  "Create Paste"
+                )}
+              </button>
+
+              <button
+                onClick={() => {
+                  setContent("");
+                  setTtl("");
+                  setMaxViews("");
+                  setCreateRes(null);
+                  setCreateErr("");
+                }}
+                disabled={disabled}
+                className="secondary"
+              >
+                Clear
+              </button>
+            </div>
+
+            {createErr && (
+              <div className="status-message status-error">
+                <strong>Error:</strong> {createErr}
+              </div>
+            )}
+
+            {createRes && (
+              <div className="status-message status-success">
+                <div className="paste-meta">
+                  <div className="paste-meta-item">
+                    <span className="paste-meta-label">ID:</span>
+                    <code className="paste-meta-value">{createRes.id}</code>
+                  </div>
+                  <div className="paste-meta-item">
+                    <span className="paste-meta-label">HTML URL:</span>
+                    <a href={pasteUrl} target="_blank" rel="noreferrer" className="external-link">
+                      {origin}{pasteUrl}
+                    </a>
+                  </div>
+                  <div className="paste-meta-item">
+                    <span className="paste-meta-label">API JSON:</span>
+                    <a href={apiJsonUrl} target="_blank" rel="noreferrer" className="external-link">
+                      {origin}{apiJsonUrl}
+                    </a>
+                    <span style={{ fontSize: "0.75rem", opacity: 0.7, marginLeft: "0.5rem" }}>(counts as a view)</span>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
 
-          {/* Health output */}
-          {(healthErr || healthRes) && (
-            <div style={{ marginTop: 12, padding: 10, background: "#fff7e6", border: "1px solid #ffd591", borderRadius: 10 }}>
-              <b>Health:</b>{" "}
-              {healthErr ? (
-                <span style={{ color: "#a8071a" }}>{healthErr}</span>
-              ) : (
-                <code>{JSON.stringify(healthRes)}</code>
+          {/* Fetch */}
+          <div className="card">
+            <h3 className="card-title">🔍 Fetch Paste</h3>
+
+            <div className="fetch-container">
+              <div className="fetch-input">
+                <label>Paste ID</label>
+                <input
+                  value={pasteId}
+                  onChange={(e) => setPasteId(e.target.value)}
+                  placeholder="Enter paste ID (e.g. abc123...)"
+                />
+              </div>
+              <button
+                onClick={fetchPaste}
+                disabled={disabled}
+                className="primary"
+              >
+                {loading ? (
+                  <>
+                    <span className="loading-spinner"></span>
+                    Fetching...
+                  </>
+                ) : (
+                  "Fetch"
+                )}
+              </button>
+            </div>
+
+            <div className="button-group-inline" style={{ marginTop: "1rem" }}>
+              <button
+                onClick={checkHealth}
+                disabled={disabled}
+                className="secondary"
+              >
+                {loading ? (
+                  <>
+                    <span className="loading-spinner"></span>
+                    Checking...
+                  </>
+                ) : (
+                  "Check Health"
+                )}
+              </button>
+
+              {pasteId.trim() && (
+                <a href={`/p/${pasteId.trim()}`} target="_blank" rel="noreferrer" className="external-link">
+                  Open HTML View
+                </a>
               )}
             </div>
-          )}
 
-          {fetchErr && (
-            <div style={{ marginTop: 12, padding: 10, background: "#ffecec", border: "1px solid #ffb3b3", borderRadius: 10 }}>
-              <b>Error:</b> {fetchErr}
-            </div>
-          )}
+            {/* Health output */}
+            {(healthErr || healthRes) && (
+              <div className={`status-message ${healthErr ? 'status-error' : 'status-info'}`}>
+                <strong>Health Check:</strong>{" "}
+                {healthErr ? (
+                  healthErr
+                ) : (
+                  <code>{JSON.stringify(healthRes)}</code>
+                )}
+              </div>
+            )}
 
-          {fetchRes && (
-            <div style={{ marginTop: 12, padding: 10, background: "#f6fff2", border: "1px solid #c7f2b5", borderRadius: 10 }}>
-              <pre style={{ margin: 0, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-                {JSON.stringify(fetchRes, null, 2)}
-              </pre>
+            {fetchErr && (
+              <div className="status-message status-error">
+                <strong>Error:</strong> {fetchErr}
+              </div>
+            )}
 
-              {fetchRes.content && (
-                <>
-                  <hr style={{ margin: "12px 0" }} />
-                  <div style={{ fontWeight: 700, marginBottom: 6 }}>Content Preview</div>
-                  <pre style={{ margin: 0, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-                    {fetchRes.content}
-                  </pre>
-                </>
-              )}
-            </div>
-          )}
+            {fetchRes && (
+              <div className="status-message status-success">
+                <div className="paste-result">
+                  <div className="paste-meta">
+                    <div className="paste-meta-item">
+                      <span className="paste-meta-label">ID:</span>
+                      <span className="paste-meta-value">{fetchRes.id}</span>
+                    </div>
+                    {fetchRes.created_at && (
+                      <div className="paste-meta-item">
+                        <span className="paste-meta-label">Created:</span>
+                        <span className="paste-meta-value">{new Date(fetchRes.created_at).toLocaleString()}</span>
+                      </div>
+                    )}
+                    {fetchRes.ttl_seconds && (
+                      <div className="paste-meta-item">
+                        <span className="paste-meta-label">TTL:</span>
+                        <span className="paste-meta-value">{fetchRes.ttl_seconds}s</span>
+                      </div>
+                    )}
+                    {fetchRes.max_views && (
+                      <div className="paste-meta-item">
+                        <span className="paste-meta-label">Max Views:</span>
+                        <span className="paste-meta-value">{fetchRes.max_views}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {fetchRes.content && (
+                    <div className="paste-content">
+                      <pre>{fetchRes.content}</pre>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-
-      <p style={{ marginTop: 14, color: "#666" }}>
-        Tip: If you set <code>max_views</code>, each successful API fetch reduces remaining views. TTL expiry is enforced using server time (or{" "}
-        <code>x-test-now-ms</code> in TEST_MODE).
-      </p>
     </div>
   );
 }
